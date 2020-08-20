@@ -14,7 +14,7 @@ from movie import searchMovie
 
 @route('/version') 
 def version():
-    return '2020-07-06'
+    return '2020-08-20'
 
 def Start():
     #HTTP.CacheTime = CACHE_1HOUR * 12

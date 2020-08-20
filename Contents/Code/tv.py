@@ -108,12 +108,20 @@ def updateTV(metadata, media):
             url2 = url.replace('w=tv&', '') 
             root2 = HTML.ElementFromURL(url2)
             items2 = root2.xpath('//*[@id="tvpColl"]/div[2]/div/div[1]/div')
-            tmp = items2[0].text_content().strip()
-            summary = tmp + u' 방송종료'
-            metadata.studio = tmp.split(' ')[0]
-            match = Regex(r'(\d{4}\.\d{1,2}\.\d{1,2})~').search(tmp)
-            if match:
-                metadata.originally_available_at = Datetime.ParseDate(match.group(1)).date()
+            # 2020-08-20 case 드라마 모델.
+            if not items2:
+                url2 = 'https://search.daum.net/search?q=%s&irk=%s&irt=tv-program&DA=TVP' % (urllib.quote((u'%s 방송' % search_title).encode('utf8')), search_id)
+                root2 = HTML.ElementFromURL(url2)
+                items2 = root2.xpath('//*[@id="tvpColl"]/div[2]/div/div[1]/div')
+            if items2:
+                tmp = items2[0].text_content().strip()
+                summary = tmp + u' 방송종료'
+                metadata.studio = tmp.split(' ')[0]
+                match = Regex(r'(\d{4}\.\d{1,2}\.\d{1,2})~').search(tmp)
+                if match:
+                    metadata.originally_available_at = Datetime.ParseDate(match.group(1)).date()
+            else:
+                summary = u'방송종료'
 
         metadata.genres.clear()
         items = root.xpath('//*[@id="tv_program"]/div[1]/dl[1]/dd')
