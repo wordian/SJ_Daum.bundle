@@ -14,7 +14,7 @@ from movie import searchMovie
 
 @route('/version') 
 def version():
-    return '2020-08-20'
+    return '2020-08-21'
 
 def Start():
     #HTTP.CacheTime = CACHE_1HOUR * 12
@@ -91,6 +91,12 @@ def update_movie_by_web(metadata, metadata_id):
       #try: metadata.summary = String.DecodeHTMLEntities(String.StripTags(root.xpath('//div[@class="desc_movie"]/p')[0].text_content().strip()).strip())
       try: metadata.summary = String.DecodeHTMLEntities(String.StripTags(root.xpath('//div[@class="desc_movie"]/p')[0].text_content().strip().replace('<br>', '\n\n')).strip())
       except: pass
+      try:
+        tags = root.xpath('//span[@class="thumb_summary"]/span/a/span/img')
+        img_url = urllib.unquote(tags[0].attrib['src'].split('fname=')[1])
+        poster = HTTP.Request( img_url )
+        metadata.posters[img_url] = Proxy.Media(poster)
+      except: pass
   except Exception as e:
     Log('Exception:%s', e)
     Log(traceback.format_exc())
@@ -129,11 +135,10 @@ def updateDaumMovie(cate, metadata):
         metadata.countries.add(item['countryKo'])
     except:
       update_movie_by_web(metadata, metadata_id)
-    """
 
     try: poster_url = info['photo']['fullname']
     except:pass
-
+    """
   # (2) cast crew
     directors = list()
     producers = list()
@@ -229,11 +234,11 @@ def updateDaumMovie(cate, metadata):
             try: metadata.art[art_url] = Proxy.Preview(HTTP.Request(item['thumbnail']), sort_order = idx_art)
             except: pass
     Log.Debug('Total %d posters, %d artworks' %(idx_poster, idx_art))
-    if idx_poster == 0:
-        if poster_url:
-            poster = HTTP.Request( poster_url )
-            try: metadata.posters[poster_url] = Proxy.Media(poster)
-            except: pass
+    #if idx_poster == 0:
+    #    if poster_url:
+    #        poster = HTTP.Request( poster_url )
+    #        try: metadata.posters[poster_url] = Proxy.Media(poster)
+    #        except: pass
     
 ####################################################################################################
 class SJ_DaumMovieAgent(Agent.Movies):
