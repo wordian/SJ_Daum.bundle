@@ -14,7 +14,7 @@ from movie import searchMovie
 
 @route('/version') 
 def version():
-    return '2020-08-21'
+    return '2020-08-26'
 
 def Start():
     #HTTP.CacheTime = CACHE_1HOUR * 12
@@ -245,8 +245,8 @@ class SJ_DaumMovieAgent(Agent.Movies):
     name = "SJ Daum"  
     languages = [Locale.Language.Korean]
     primary_provider = True
-    accepts_from = ['com.plexapp.agents.localmedia', 'com.plexapp.agents.xbmcnfo', 'com.plexapp.agents.opensubtitles', 'com.plexapp.agents.themoviedb']
-    contributes_to = ['com.plexapp.agents.xbmcnfo']
+    accepts_from = ['com.plexapp.agents.localmedia', 'com.plexapp.agents.xbmcnfo', 'com.plexapp.agents.opensubtitles', 'com.plexapp.agents.themoviedb', 'com.plexapp.agents.lfw_theme']
+    contributes_to = ['com.plexapp.agents.xbmcnfo', 'com.plexapp.agents.lfw_theme']
     fallback_agent = 'com.plexapp.agents.imdb'
     def search(self, results, media, lang, manual=False):
         return searchMovie(results, media, lang)
@@ -260,10 +260,8 @@ class SJ_DaumTvAgent(Agent.TV_Shows):
     name = "SJ Daum"
     primary_provider = True
     languages = [Locale.Language.Korean]
-    accepts_from = ['com.plexapp.agents.localmedia', 'com.plexapp.agents.xbmcnfotv']
-    contributes_to = [
-        'com.plexapp.agents.xbmcnfotv',
-    ]
+    accepts_from = ['com.plexapp.agents.localmedia', 'com.plexapp.agents.xbmcnfotv', 'com.plexapp.agents.lfw_theme']
+    contributes_to = ['com.plexapp.agents.xbmcnfotv', 'com.plexapp.agents.lfw_theme']
 
     def search(self, results, media, lang, manual=False):
         return searchTV(results, media, lang)
