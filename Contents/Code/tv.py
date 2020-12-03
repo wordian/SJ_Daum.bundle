@@ -2,6 +2,7 @@
 import os
 import urllib
 import urllib2
+import urlparse
 import unicodedata
 import traceback
 import re
@@ -140,6 +141,11 @@ def updateTV(metadata, media):
         items = root.xpath('//*[@id="tv_program"]/div[1]/div[1]/a/img')
         if len(items) == 1:
             image = 'https:%s' % items[0].attrib['src']
+            if image.find('/?fname=') != -1:
+                try:
+                    image_parsed = urlparse.urlparse(image)
+                    image = urlparse.parse_qs(image_parsed.query)['fname'][0]
+                except: pass
             Log('image : %s' % image)
             poster = HTTP.Request( image )
             try: 
