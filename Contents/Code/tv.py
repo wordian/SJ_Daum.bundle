@@ -190,6 +190,8 @@ def updateTV(metadata, media):
                     producers.append(entity)
                 elif entity['role'].find(u'극본') != -1 or entity['role'].find(u'각본') != -1:
                     writers.append(entity)
+                elif entity['name'].find(u'관계도') != -1:
+                    continue
                 else:
                     roles.append(entity)
         
