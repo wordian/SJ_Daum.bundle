@@ -2,6 +2,7 @@
 import os
 import urllib
 import urllib2
+import urlparse
 import unicodedata
 import traceback
 import re
@@ -140,6 +141,11 @@ def updateTV(metadata, media):
         items = root.xpath('//*[@id="tv_program"]/div[1]/div[1]/a/img')
         if len(items) == 1:
             image = 'https:%s' % items[0].attrib['src']
+            if image.find('/?fname=') != -1:
+                try:
+                    image_parsed = urlparse.urlparse(image)
+                    image = urlparse.parse_qs(image_parsed.query)['fname'][0]
+                except: pass
             Log('image : %s' % image)
             poster = HTTP.Request( image )
             try: 
@@ -190,6 +196,8 @@ def updateTV(metadata, media):
                     producers.append(entity)
                 elif entity['role'].find(u'극본') != -1 or entity['role'].find(u'각본') != -1:
                     writers.append(entity)
+                elif entity['name'].find(u'관계도') != -1:
+                    continue
                 else:
                     roles.append(entity)
         
